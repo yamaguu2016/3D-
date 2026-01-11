@@ -566,12 +566,24 @@
         'galaxy': { background: 0x000010, fog: 0x000010, type: 'dynamic' }
     };
     const ballThemes = {
-        'color': { type: 'color' },
-        'emoji_animal': { type: 'emoji', characters: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐽', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛'] },
-        'emoji_sweets': { type: 'emoji', characters: ['🎂', '🍰', '🧁', '🥧', '🍮', '🍭', '🍬', '🍫', '🍿', '🍩', '🍪', '🌰', '🥜', '🍯', '🥛', '🍼', '☕', '🍵', '🧃', '🥤', '🍦', '🍧', '🍨', '🥨', '🧇', '🥞', '🧈', '🍳', '🌭', '🍔'] },
-        'emoji_sea': { type: 'emoji', characters: ['🐠', '🐡', '🐙', '🦑', '🦐', '🦞', '🦀', '🐬', '🐳', '🐋', '🦈', '🐚', '🪸', '🦪', '🐟', '🐊', '🐢', '🦭', '🦦', '🦈', '🐧', '🦩', '🐳', '🐋', '🐬', '🐠', '🦐', '🦞', '🦀', '🦑'] },
-        'emoji_sports': { type: 'emoji', characters: ['⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱', '🪀', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🥅', '⛳', '🏹', '🎣', '🥊', '🥋', '🎽', '🛹', '🛼', '⛸️', '🎿', '🛷', '🎳'] }
-    };
+    'color': { type: 'color' },
+    'emoji_animal': { 
+        type: 'emoji', 
+        characters: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐽', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛'] 
+    },
+    'emoji_sweets': { 
+        type: 'emoji', 
+        characters: ['🎂', '🍰', '🧁', '🥧', '🍮', '🍭', '🍬', '🍫', '🍿', '🍩', '🍪', '🌰', '🥜', '🍯', '🥛', '🍼', '☕', '🍵', '🧃', '🥤', '🍦', '🍧', '🍨', '🥨', '🧇', '🥞', '🧈', '🍳', '🌭', '🍔'] 
+    },
+    'emoji_sea': { 
+        type: 'emoji', 
+        characters: ['🐠', '🐡', '🐙', '🦑', '🦐', '🦞', '🦀', '🐬', '🐳', '🐋', '🦈', '🐚', '🪸', '🦪', '🐟', '🐊', '🐢', '🦭', '🦦', '🐧', '🦩', '🦐', '🦞', '🦑', '🐙', '🐠', '🐡', '🐬', '🐳', '🦈'] 
+    },
+    'emoji_sports': { 
+    type: 'emoji', 
+    characters: ['🏆', '🏀', '🏈', '🥇', '🥎', '🎾', '🎯', '🏉', '🥏', '🎱', '🪀', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🥅', '⛳', '🏹', '🎣', '🥊', '🥋', '🎽', '🛹', '🛼', '⛸️', '🎿', '🛷', '🎳'] 
+}
+};
     let emojiMap = {};
 
     let particleEffects = [];
@@ -735,32 +747,63 @@
     }
 
     // 絵文字テクスチャ生成（キューブ用に6面対応）
-    function createEmojiTexture(emoji) {
-        const canvas = document.createElement('canvas');
-        canvas.width = 256; canvas.height = 256;
-        const context = canvas.getContext('2d');
-        context.fillStyle = '#E8E8E8';
-        context.fillRect(0, 0, 256, 256);
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-        context.font = '180px sans-serif';
-        context.fillText(emoji, 128, 140);
-        return new THREE.CanvasTexture(canvas);
-    }
+    // 絵文字テクスチャ生成（視認性改善版）
+function createEmojiTexture(emoji) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256; canvas.height = 256;
+    const context = canvas.getContext('2d');
     
-    function createHiddenBallTexture() {
-        const canvas = document.createElement('canvas');
-        canvas.width = 256; canvas.height = 256;
-        const context = canvas.getContext('2d');
-        context.fillStyle = '#222';
-        context.fillRect(0, 0, 256, 256);
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-        context.fillStyle = 'white';
-        context.font = 'bold 180px sans-serif';
-        context.fillText('?', 128, 140);
-        return new THREE.CanvasTexture(canvas);
-    }
+    // 明るいクリーム色の背景
+    context.fillStyle = '#FFF8E7';
+    context.fillRect(0, 0, 256, 256);
+    
+    // 白い円形背景（絵文字が映える）
+    context.beginPath();
+    context.arc(128, 128, 118, 0, Math.PI * 2);
+    context.fillStyle = '#FFFFFF';
+    context.fill();
+    
+    // 薄いグレーの枠線
+    context.strokeStyle = '#CCCCCC';
+    context.lineWidth = 3;
+    context.stroke();
+    
+    // 絵文字を描画
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.font = '150px sans-serif';
+    context.fillText(emoji, 128, 135);
+    
+    return new THREE.CanvasTexture(canvas);
+}
+
+function createHiddenBallTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256; canvas.height = 256;
+    const context = canvas.getContext('2d');
+    
+    // 暗い紫背景
+    context.fillStyle = '#1a1a2e';
+    context.fillRect(0, 0, 256, 256);
+    
+    // 暗めの円
+    context.beginPath();
+    context.arc(128, 128, 118, 0, Math.PI * 2);
+    context.fillStyle = '#2d2d44';
+    context.fill();
+    context.strokeStyle = '#4a4a6a';
+    context.lineWidth = 3;
+    context.stroke();
+    
+    // ?マーク
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillStyle = '#7a7a9a';
+    context.font = 'bold 140px sans-serif';
+    context.fillText('?', 128, 135);
+    
+    return new THREE.CanvasTexture(canvas);
+}
 
     function createNumberSprite(number) {
         const canvas = document.createElement('canvas');
